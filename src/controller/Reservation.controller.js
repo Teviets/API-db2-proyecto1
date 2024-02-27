@@ -1,18 +1,11 @@
 const Reservation = require('../models/Reservation');
 
 const CreateReservation = async (req, res) => {
-    const { id_restaurante, id_usuario, cantidad_personas, comentarios } = req.body;
-
-    const fecha = getActualDate();
-
-    const reservation = new Reservation({
-        id_restaurante,
-        id_usuario,
-        fecha,
-        cantidad_personas,
-        comentarios
     
-    });
+
+    
+
+    const reservation = new Reservation(req.body);
     await reservation
         .save()
         .then((data) => res.json(data))
