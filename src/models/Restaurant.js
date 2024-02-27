@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
 const RestaurantSchema = new mongoose.Schema({
-    id: {
-        type: Number,
-        required: true
-    },
     nombre: {
         type: String,
         required: true

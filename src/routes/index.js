@@ -2,7 +2,7 @@ const { Router } = require('express');
 
 const router = Router();
 
-const { CreatePlate, CreatePlates, GetPlates } = require('../controller/Plate.controller');
+const { CreatePlates, GetPlates } = require('../controller/Plate.controller');
 const { CreateRating, GetRating, GetThreeBestRatings } = require('../controller/Rating.controller');
 const { getRestaurants, postRestaurant, deleteRestaurant } = require('../controller/Restaurant.controller');
 const { Register, Login, getUserByID } = require('../controller/User.controller');
@@ -13,7 +13,6 @@ const { CreateReservation, GetReservation, DeleteReservation  } = require('../co
 router.post('/register', Register);
 router.post('/login', Login);
 router.post('/restaurant', postRestaurant);
-router.post('/plate', CreatePlate);
 router.post('/plates', CreatePlates);
 router.post('/rating', CreateRating);
 router.post('/reservation', CreateReservation);

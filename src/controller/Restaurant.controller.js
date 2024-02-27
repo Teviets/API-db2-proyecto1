@@ -15,11 +15,11 @@ const getRestaurants = async (req, res) => {
 }
 
 const postRestaurant = async (req, res) => {
-    const { id, nombre, img, descripcion, rating, latitud, longitud, plates, idUser } = req.body;
+    const { nombre, img, descripcion, rating, latitud, longitud, plates, idUser } = req.body;
     
     // verificar el tamaño de plates
     let platesArray = [];
-    if(plates.length >= 4){
+    if(plates.length >= 4 || (plates && plates.length > 4)){
         for(let i = 0; i < plates.length; i++){
             const plate = new Plate(plates[i]);
             platesArray.push(plate);
@@ -33,7 +33,6 @@ const postRestaurant = async (req, res) => {
             });
 
         const restaurant = new Restaurant({
-            id,
             nombre,
             img,
             descripcion,
@@ -48,7 +47,7 @@ const postRestaurant = async (req, res) => {
         await restaurant
             .save()
             .then((data) => {
-                console.log(data);
+                console.log("Exito al guardar");
                 User.findOneAndUpdate({ id: idUser }, { $push: { restaurantes: data } })
                     .then((data) => {
                         console.log(data);
@@ -60,6 +59,17 @@ const postRestaurant = async (req, res) => {
             .catch((error) => {
                 console.log(error);
             });
+
+        
+        for (let i = 0; i < platesArray.length; i++){
+            await Plate.updateOne({nombre: platesArray[i].nombre, precio: platesArray[i].precio}, {id_restaurante: restaurant._id})
+                .then((data) => {
+                    console.log("Exito de update");
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
 
         await User.updateOne({ id: idUser }, { $push: { restaurantes: restaurant } })
 
@@ -75,7 +85,7 @@ const postRestaurant = async (req, res) => {
 const deleteRestaurant = async (req, res) => {
     const { id } = req.query;
     await Restaurant
-        .findOneAndDelete({ id })
+        .findOneAndDelete({ _id: id })
         .then((data) => res.json({message: "Restaurante eliminado"}))
         .catch((error) => res.json(error));
 }

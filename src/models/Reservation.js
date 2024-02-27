@@ -1,16 +1,12 @@
 const mongoose = require('mongoose');
 
 const ReservationSchema = new mongoose.Schema({
-    id: {
-        type: Number,
-        required: true
-    },
     id_restaurante: {
-        type: Number,
+        type: String,
         required: true
     },
     id_usuario: {
-        type: Number,
+        type: String,
         required: true
     },
     fecha: {

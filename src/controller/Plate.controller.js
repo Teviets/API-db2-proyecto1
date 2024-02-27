@@ -4,11 +4,17 @@ const RestaurantSchema = require('../models/Restaurant');
 const CreatePlates = async (req, res) => {
     const plates = req.body;
     const restaurant = await RestaurantSchema
-        .findOne({ id: plates[0].id_restaurante })
-        .then((data) => data)
+        .findOne({ _id: plates[0].id_restaurante })
+        .then((data) => {
+            console.log(data);
+            return data;
+        
+        })
         .catch((error) => error);
-
-    if (!restaurant || !restaurant.menu || restaurant.menu.length === 12) {
+    let rest = !restaurant 
+    let men = !restaurant.menu
+    let len = restaurant.menu.length === 12
+    if (rest || men || len) {
         res.json({ error: 'El restaurante ya tiene el máximo de platos' });
         return;
     }
@@ -18,9 +24,16 @@ const CreatePlates = async (req, res) => {
 
         plates.forEach((plate) => {
             restaurant.menu.push({ nombre: plate.nombre, precio: plate.precio });
+            console.log(restaurant.menu);
         });
 
-        await RestaurantSchema.findOneAndUpdate({ id: plates[0].id_restaurante }, restaurant);
+        /*await RestaurantSchema.findOneAndUpdate({ id: plates[0].id_restaurante }, restaurant)
+            .catch((error) => res.json(error));*/
+
+        // update restaurantes collection
+        await RestaurantSchema.updateOne({ _id: plates[0].id_restaurante }, { menu: restaurant.menu })
+            .then((data) => console.log(data))
+            .catch((error) => console.log(error));
 
         res.json({ message: 'Platos creados exitosamente' });
     } catch (error) {
@@ -30,35 +43,7 @@ const CreatePlates = async (req, res) => {
 
 
 
-const CreatePlate = async (req, res) => {
-    const plate = new PlateSchema(req.body);
 
-    // get restaurant by id
-    const restaurant = await RestaurantSchema
-        .findOne({ id: plate.id_restaurante })
-        .then((data) => data)
-        .catch((error) => error);
-
-    // check if restaurant exists and has a menu property
-    if (!restaurant || !restaurant.menu || restaurant.menu.length >= 12) {
-        res.json({ error: 'El restaurante ya tiene el máximo de platos' });
-        return;
-    }
-
-    // add plate to restaurant
-    restaurant.menu.push({ nombre: plate.nombre, precio: plate.precio });
-
-    // update restaurant
-    await RestaurantSchema
-        .findOneAndUpdate({ id: plate.id_restaurante }, restaurant)
-        .catch((error) => res.json(error));
-
-    // save plate
-    await plate
-        .save()
-        .then((data) => res.json(data))
-        .catch((error) => res.json(error));
-};
 
 
 const GetPlates = async(req, res) => {
@@ -75,6 +60,5 @@ const GetPlates = async(req, res) => {
 
 module.exports = {
     CreatePlates,
-    CreatePlate,
     GetPlates
 }

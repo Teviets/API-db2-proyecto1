@@ -14,8 +14,7 @@ const PlateSchema = new mongoose.Schema({
         required: true
     },
     id_restaurante: {
-        type: String,
-        required: true
+        type: String
     }
 
 });

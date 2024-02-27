@@ -1,7 +1,35 @@
 const Rating = require("../models/Rating");
+const Restaurant = require("../models/Restaurant");
 
 const CreateRating = async (req, res) => {
-    const rating = new Rating(req.body);
+    const { id_restaurante, id_usuario, puntuacion, comentario } = req.body;
+    const fecha = getActualDate();
+    const rating = new Rating({
+        id_restaurante,
+        id_usuario,
+        fecha,
+        puntuacion,
+        comentario
+    });
+
+    // actualiza la media de rating del restaurante
+
+    let restaurant = await Restaurant.findOne({ _id: id_restaurante });
+    let ratings = await Rating.find({ id_restaurante: id_restaurante });
+    let sum = 0;
+    ratings.forEach((rating) => {
+        sum += rating.puntuacion;
+    });
+
+    let media = sum / ratings.length;
+    restaurant.rating = media;
+
+    await Restaurant
+        .updateOne({ _id: id_restaurante }, restaurant)
+        .then((data) => console.log("exito ", media))
+        .catch((error) => console.log(error));
+
+
     await rating
         .save()
         .then((data) => res.json(data))
@@ -30,6 +58,17 @@ const GetThreeBestRatings = async (req, res) => {
         .then((data) => res.json(data))
         .catch((error) => res.json(error));
 };
+
+function getActualDate() {
+    let date = new Date();
+    let minutes = date.getMinutes();
+    let hours = date.getHours();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+    let actualDate = `${year}-${month}-${day} ${hours}:${minutes}`;
+    return actualDate;
+}
 
 module.exports = {
     CreateRating,

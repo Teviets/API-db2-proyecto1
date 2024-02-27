@@ -17,7 +17,7 @@ const Login = async(req, res) => {
 
 const getUserByID = async(req, res) => {
     const { id } = req.query;
-    await UserSchema.findOne({ id })
+    await UserSchema.findOne({ _id: id })
         .then((data)=> res.json(data))
         .catch((error)=> res.json(error));
 }
