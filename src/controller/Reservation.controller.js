@@ -14,12 +14,12 @@ const GetReservation = async (req, res) => {
     let date = getActualDate();
 
     await Reservation.find({
-        id_restaurante: id_restaurante,
-        fecha: {
+        id_restaurante: id_restaurante
+        /*fecha: {
             $gte: date
-        }
+        }*/
     })
-    .sort({fecha: 1})
+    .sort({fecha: -1})
     .then((data) => res.json(data))
     .catch((error) => res.json(error));
 }

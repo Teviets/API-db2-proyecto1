@@ -21,10 +21,6 @@ const ReservationSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    personas: {
-        type: Number,
-        required: true
-    },
     comentarios: {
         type: String
     }

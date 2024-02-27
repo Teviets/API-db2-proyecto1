@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
 const PlateSchema = new mongoose.Schema({
-    id: {
-        type: String,
-        required: true
-    },
     nombre: {
         type: String,
         required: true
@@ -18,7 +14,7 @@ const PlateSchema = new mongoose.Schema({
         required: true
     },
     id_restaurante: {
-        type: Number,
+        type: String,
         required: true
     }
 

@@ -1,16 +1,12 @@
 const mongoose = require('mongoose');
 
 const RatingSchema = new mongoose.Schema({
-    id: {
-        type: Number,
-        required: true
-    },
     id_restaurante: {
-        type: Number,
+        type: String,
         required: true
     },
     id_usuario: {
-        type: Number,
+        type: String,
         required: true
     },
     fecha: {
@@ -18,7 +14,7 @@ const RatingSchema = new mongoose.Schema({
         required: true
     },
     puntuacion: {
-        type: Number,
+        type: String,
         required: true
     },
     comentario: {
@@ -27,4 +23,4 @@ const RatingSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Rating', RatingSchema, 'Rating');
+module.exports = mongoose.model('Rating', RatingSchema, 'Ratings');

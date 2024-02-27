@@ -6,7 +6,7 @@ const CircularJSON = require('circular-json');
 const getRestaurants = async (req, res) => {
     try{
         let data = await Restaurant.find();
-        console.log(data);
+        
         res.json(data);
     }catch (error){
         console.log(error);
@@ -15,11 +15,11 @@ const getRestaurants = async (req, res) => {
 }
 
 const postRestaurant = async (req, res) => {
-    const { nombre, img, descripcion, rating, latitud, longitud, menu, plates, idUser } = req.body;
+    const { id, nombre, img, descripcion, rating, latitud, longitud, plates, idUser } = req.body;
     
     // verificar el tamaño de plates
     let platesArray = [];
-    if(plates.length > 4){
+    if(plates.length >= 4){
         for(let i = 0; i < plates.length; i++){
             const plate = new Plate(plates[i]);
             platesArray.push(plate);
@@ -33,6 +33,7 @@ const postRestaurant = async (req, res) => {
             });
 
         const restaurant = new Restaurant({
+            id,
             nombre,
             img,
             descripcion,
@@ -41,8 +42,7 @@ const postRestaurant = async (req, res) => {
                 latitud,
                 longitud
             },
-            menu,
-            plates: platesArray
+            menu: platesArray
         });
 
         await restaurant
@@ -76,7 +76,7 @@ const deleteRestaurant = async (req, res) => {
     const { id } = req.query;
     await Restaurant
         .findOneAndDelete({ id })
-        .then((data) => res.json(data))
+        .then((data) => res.json({message: "Restaurante eliminado"}))
         .catch((error) => res.json(error));
 }
 
