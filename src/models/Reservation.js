@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 
 const ReservationSchema = new mongoose.Schema({
     id_restaurante: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     id_usuario: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     fecha: {

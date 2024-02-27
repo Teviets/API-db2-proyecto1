@@ -2,9 +2,6 @@ const Reservation = require('../models/Reservation');
 
 const CreateReservation = async (req, res) => {
     
-
-    
-
     const reservation = new Reservation(req.body);
     await reservation
         .save()
@@ -18,9 +15,10 @@ const GetReservation = async (req, res) => {
     let date = getActualDate();
 
     await Reservation.find({
-        id_restaurante: id_restaurante
+        id_restaurante: //object id del restaurante
+            id_restaurante
     })
-    .sort({fecha: -1})
+    //.sort({fecha: -1})
     .then((data) => res.json(data))
     .catch((error) => res.json(error));
 }
