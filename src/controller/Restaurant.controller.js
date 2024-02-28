@@ -90,8 +90,72 @@ const deleteRestaurant = async (req, res) => {
         .catch((error) => res.json(error));
 }
 
+const getPlatesMostExpensive = async (req,res) =>{
+    try{
+        let data = Restaurant.aggregate([
+            {
+                $unwind: "$menu"
+            },
+            {
+                $group: {
+                    _id: "$_id",
+                    nombre: {
+                        $first: "$nombre"
+                    },
+                    platoMasCaro: {
+                        $max: "$menu.precio"
+                    },
+                    platoMasBarato: {
+                        $min: "$menu.precio"
+                    }
+                }
+            },
+            {
+                $sort: {
+                    platoMasCaro: -1
+                }
+            },
+            {
+                $limit: 5
+            }
+        ])
+        .then((data) => {
+            res.json(data);
+        })
+    }catch (error){
+        console.log(error);
+        res.status(500).json({ error: 'Error al obtener restaurantes' });
+    }
+}
+
+
+const top10Restaurants = async(req, res) => {
+    await Restaurant.aggregate([
+        {
+          $sort: {
+            rating: -1
+          }
+        },
+        {
+          $limit: 10
+        },
+          {
+              $project: {
+                  nombre: 1,
+                  rating: 1
+              }
+          }
+      ]).then((data) => res.json(data))
+        .catch((error) => {
+            console.log(error);
+            res.json(error);
+        });
+};
+
 module.exports = {
     getRestaurants,
     postRestaurant,
-    deleteRestaurant
+    deleteRestaurant,
+    getPlatesMostExpensive,
+    top10Restaurants
 }
