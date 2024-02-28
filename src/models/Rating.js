@@ -14,10 +14,10 @@ const RatingSchema = new mongoose.Schema({
         required: true
     },
     puntuacion: {
-        type: String,
+        type: Number,
         required: true
     },
-    comentario: {
+    comentarios: {
         type: String,
         required: true
     }

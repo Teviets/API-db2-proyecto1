@@ -2,38 +2,45 @@ const Rating = require("../models/Rating");
 const Restaurant = require("../models/Restaurant");
 
 const CreateRating = async (req, res) => {
-    const { id_restaurante, id_usuario, puntuacion, comentario } = req.body;
+    const { id_restaurante, id_usuario, puntuacion, comentarios } = req.body;
     const fecha = getActualDate();
     const rating = new Rating({
         id_restaurante,
         id_usuario,
         fecha,
         puntuacion,
-        comentario
+        comentarios
     });
 
     // actualiza la media de rating del restaurante
 
-    let restaurant = await Restaurant.findOne({ _id: id_restaurante });
-    let ratings = await Rating.find({ id_restaurante: id_restaurante });
-    let sum = 0;
-    ratings.forEach((rating) => {
-        sum += rating.puntuacion;
-    });
+    try {
+        let restaurant = await Restaurant.findOne({ _id: id_restaurante });
+        let ratings = await Rating.find({ id_restaurante: id_restaurante });
+        let sum = 0;
+        ratings.forEach((rating) => {
+            sum += rating.puntuacion;
+        });
 
-    let media = sum / ratings.length;
-    restaurant.rating = media;
+        let media = sum / ratings.length;
+        restaurant.rating = media;
 
-    await Restaurant
-        .updateOne({ _id: id_restaurante }, restaurant)
-        .then((data) => console.log("exito ", media))
-        .catch((error) => console.log(error));
+        await Restaurant
+            .updateOne({ _id: id_restaurante }, restaurant)
+            .then((data) => console.log("exito ", media))
+            .catch((error) => console.log(error));
 
 
-    await rating
-        .save()
-        .then((data) => res.json(data))
-        .catch((error) => res.json(error));
+        await rating
+            .save()
+            .then((data) => res.json(data))
+            .catch((error) => res.json(error));
+    }
+
+    catch (error) {
+        res.json(error);
+        console.log(error);
+    }
 };
 
 const GetRating = async (req, res) => {
@@ -41,8 +48,8 @@ const GetRating = async (req, res) => {
     const { id_restaurante } = req.query;
 
     await Rating.find(
-            {id_restaurante: id_restaurante}
-        )
+        { id_restaurante: id_restaurante }
+    )
         .then((data) => res.json(data))
         .catch((error) => res.json(error));
 };
@@ -51,9 +58,9 @@ const GetThreeBestRatings = async (req, res) => {
     const { id_restaurante } = req.query;
 
     await Rating.find(
-            {id_restaurante: id_restaurante}
-        )
-        .sort({puntuacion: -1})
+        { id_restaurante: id_restaurante }
+    )
+        .sort({ puntuacion: -1 })
         .limit(3)
         .then((data) => res.json(data))
         .catch((error) => res.json(error));
